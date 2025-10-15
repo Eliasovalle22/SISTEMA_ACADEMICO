@@ -1,0 +1,191 @@
+{% extends 'academico/base.html' %}
+
+{% block title %}Dashboard Estudiante{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2><i class="bi bi-person-circle text-primary"></i> Panel del Estudiante</h2>
+            <p class="text-muted">Bienvenido {{ estudiante.nombre }} {{ estudiante.apellido }}</p>
+        </div>
+    </div>
+
+    <!-- Información del Estudiante -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card bg-gradient" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                <div class="card-body text-white">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h4><i class="bi bi-person-badge"></i> {{ estudiante.nombre }} {{ estudiante.apellido }}</h4>
+                            <p class="mb-1">
+                                <strong>ID:</strong> {{ estudiante.id_estudiante }} | 
+                                <strong>Programa:</strong> {{ estudiante.programa.nombre_programa }}
+                            </p>
+                            <p class="mb-0">
+                                <strong>Facultad:</strong> {{ estudiante.facultad.nombre_facultad }}
+                            </p>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <i class="bi bi-mortarboard-fill" style="font-size: 5rem; opacity: 0.3;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Estadísticas -->
+    <div class="row g-4 mb-4">
+        <div class="col-xl-4 col-md-6">
+            <div class="card stat-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                <div class="card-body text-center">
+                    <i class="bi bi-book-fill" style="font-size: 3rem;"></i>
+                    <div class="number mt-3">{{ total_materias }}</div>
+                    <div class="label">Materias Inscritas</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-4 col-md-6">
+            <div class="card stat-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                <div class="card-body text-center">
+                    <i class="bi bi-journal-code" style="font-size: 3rem;"></i>
+                    <div class="number mt-3">{{ programa.numero_creditos }}</div>
+                    <div class="label">Créditos Totales</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-4 col-md-6">
+            <div class="card stat-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                <div class="card-body text-center">
+                    <i class="bi bi-building" style="font-size: 3rem;"></i>
+                    <div class="number mt-3">{{ facultad.nombre_facultad|truncatewords:1 }}</div>
+                    <div class="label">Facultad</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Accesos Rápidos -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h4 class="mb-3"><i class="bi bi-lightning-fill text-warning"></i> Accesos Rápidos</h4>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-5">
+        <div class="col-lg-3 col-md-6">
+            <a href="{% url 'estudiante_horario' %}" class="text-decoration-none">
+                <div class="card hover-card">
+                    <div class="card-body text-center">
+                        <i class="bi bi-calendar-week text-primary" style="font-size: 2.5rem;"></i>
+                        <h6 class="mt-3">Mi Horario</h6>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <a href="{% url 'estudiante_crear_horario' %}" class="text-decoration-none">
+                <div class="card hover-card">
+                    <div class="card-body text-center">
+                        <i class="bi bi-calendar-plus text-success" style="font-size: 2.5rem;"></i>
+                        <h6 class="mt-3">Inscribir Materias</h6>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <a href="{% url 'estudiante_asistencias' %}" class="text-decoration-none">
+                <div class="card hover-card">
+                    <div class="card-body text-center">
+                        <i class="bi bi-clipboard-check text-info" style="font-size: 2.5rem;"></i>
+                        <h6 class="mt-3">Mis Asistencias</h6>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <a href="{% url 'estudiante_seguimiento_microcurriculo' %}" class="text-decoration-none">
+                <div class="card hover-card">
+                    <div class="card-body text-center">
+                        <i class="bi bi-file-text text-warning" style="font-size: 2.5rem;"></i>
+                        <h6 class="mt-3">Microcurrículos</h6>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Información Adicional -->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-person"></i> Información Personal</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Documento:</strong> {{ estudiante.get_tipo_documento_display }} - {{ estudiante.id_estudiante }}</p>
+                    <p><strong>Correo:</strong> {{ estudiante.correo }}</p>
+                    <p><strong>Celular:</strong> {{ estudiante.celular }}</p>
+                    <p><strong>Ciudad:</strong> {{ estudiante.ciudad }}, {{ estudiante.departamento }}</p>
+                    <p class="mb-0"><strong>Estado Civil:</strong> {{ estudiante.get_estado_civil_display }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-person-check"></i> Información Académica</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Programa:</strong> {{ estudiante.programa.nombre_programa }}</p>
+                    <p><strong>Facultad:</strong> {{ estudiante.facultad.nombre_facultad }}</p>
+                    <p><strong>Créditos del Programa:</strong> {{ programa.numero_creditos }}</p>
+                    {% if estudiante.puntaje_icfes %}
+                    <p><strong>Puntaje ICFES:</strong> {{ estudiante.puntaje_icfes }}</p>
+                    {% endif %}
+                    {% if estudiante.sisben %}
+                    <p class="mb-0"><strong>SISBEN:</strong> {{ estudiante.sisben }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-info-circle"></i> Recursos del Estudiante</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Consultar y gestionar tu horario académico</li>
+                        <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Visualizar tus asistencias a clases</li>
+                        <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Acceder a los microcurrículos de tus materias</li>
+                        <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Dar seguimiento a tu plan académico</li>
+                        <li><i class="bi bi-check-circle text-success"></i> Inscribir materias cada periodo</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .hover-card {
+        transition: all 0.3s ease;
+    }
+    .hover-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+    }
+</style>
+{% endblock %}

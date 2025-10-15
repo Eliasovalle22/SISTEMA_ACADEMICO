@@ -1,0 +1,96 @@
+{% extends 'academico/base.html' %}
+
+{% block title %}Programas - Sistema Académico{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <h2><i class="bi bi-journal-code text-warning"></i> Gestión de Programas</h2>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'index' %}">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'administrador_dashboard' %}">Administrador</a></li>
+                    <li class="breadcrumb-item active">Programas</li>
+                </ol>
+            </nav>
+        </div>
+        <div class="col-md-6 text-end">
+            <a href="{% url 'programa_crear' %}" class="btn btn-warning">
+                <i class="bi bi-plus-circle"></i> Nuevo Programa
+            </a>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-header">
+            <h5 class="mb-0">
+                <i class="bi bi-table"></i> Lista de Programas
+                <span class="badge bg-warning">{{ programas.count }}</span>
+            </h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Nombre del Programa</th>
+                            <th>Facultad</th>
+                            <th>Créditos</th>
+                            <th>Estudiantes</th>
+                            <th class="text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for programa in programas %}
+                        <tr>
+                            <td><strong>{{ programa.codigo_programa }}</strong></td>
+                            <td>
+                                <i class="bi bi-journal-text text-warning"></i>
+                                {{ programa.nombre_programa }}
+                            </td>
+                            <td>
+                                <span class="badge bg-info">{{ programa.facultad.nombre_facultad }}</span>
+                            </td>
+                            <td>
+                                <i class="bi bi-award"></i> {{ programa.numero_creditos }}
+                            </td>
+                            <td>
+                                <span class="badge bg-primary">{{ programa.num_estudiantes }}</span>
+                            </td>
+                            <td class="text-center">
+                                <div class="btn-group" role="group">
+                                    <a href="{% url 'programa_editar' programa.codigo_programa %}" 
+                                       class="btn btn-sm btn-warning"
+                                       data-bs-toggle="tooltip"
+                                       title="Editar">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a href="{% url 'programa_eliminar' programa.codigo_programa %}" 
+                                       class="btn btn-sm btn-danger"
+                                       data-bs-toggle="tooltip"
+                                       title="Eliminar">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center py-5">
+                                <i class="bi bi-inbox" style="font-size: 3rem; color: #ccc;"></i>
+                                <p class="text-muted mt-3">No hay programas registrados</p>
+                                <a href="{% url 'programa_crear' %}" class="btn btn-warning">
+                                    <i class="bi bi-plus-circle"></i> Crear Primer Programa
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

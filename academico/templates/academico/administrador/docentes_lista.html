@@ -1,0 +1,169 @@
+{% extends 'academico/base.html' %}
+{% load static %}
+
+{% block title %}Docentes - Sistema Académico{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <h2><i class="bi bi-person-workspace text-success"></i> Gestión de Docentes</h2>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'index' %}">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'administrador_dashboard' %}">Administrador</a></li>
+                    <li class="breadcrumb-item active">Docentes</li>
+                </ol>
+            </nav>
+        </div>
+        <div class="col-md-6 text-end">
+            <a href="{% url 'docente_crear' %}" class="btn btn-success">
+                <i class="bi bi-plus-circle"></i> Nuevo Docente
+            </a>
+        </div>
+    </div>
+
+    <!-- Búsqueda -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-9">
+                    <label class="form-label">Buscar Docente</label>
+                    <input type="text" 
+                           name="search" 
+                           class="form-control" 
+                           placeholder="Buscar por nombre, apellido o correo"
+                           value="{{ search }}">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">&nbsp;</label>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-search"></i> Buscar
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Tabla de docentes -->
+    <div class="card shadow-sm">
+        <div class="card-header">
+            <h5 class="mb-0">
+                <i class="bi bi-table"></i> Lista de Docentes 
+                <span class="badge bg-success">{{ docentes.paginator.count }}</span>
+            </h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre Completo</th>
+                            <th>Correo Electrónico</th>
+                            <th>Celular</th>
+                            <th>Ciudad</th>
+                            <th>Sexo</th>
+                            <th class="text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for docente in docentes %}
+                        <tr>
+                            <td><strong>{{ docente.id_docente }}</strong></td>
+                            <td>
+                                <i class="bi bi-person-badge text-success"></i>
+                                {{ docente.nombre_docente }} {{ docente.apellido_docente }}
+                            </td>
+                            <td>
+                                <i class="bi bi-envelope"></i> {{ docente.correo }}
+                            </td>
+                            <td>
+                                <i class="bi bi-phone"></i> {{ docente.celular }}
+                            </td>
+                            <td>{{ docente.ciudad }}</td>
+                            <td>
+                                {% if docente.sexo == 'M' %}
+                                    <span class="badge bg-info">Masculino</span>
+                                {% elif docente.sexo == 'F' %}
+                                    <span class="badge bg-danger">Femenino</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">Otro</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-center">
+                                <div class="btn-group" role="group">
+                                    <a href="{% url 'docente_editar' docente.id_docente %}" 
+                                       class="btn btn-sm btn-warning"
+                                       data-bs-toggle="tooltip"
+                                       title="Editar">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a href="{% url 'docente_eliminar' docente.id_docente %}" 
+                                       class="btn btn-sm btn-danger"
+                                       data-bs-toggle="tooltip"
+                                       title="Eliminar">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" class="text-center py-5">
+                                <i class="bi bi-inbox" style="font-size: 3rem; color: #ccc;"></i>
+                                <p class="text-muted mt-3">No se encontraron docentes</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Paginación -->
+        {% if docentes.has_other_pages %}
+        <div class="card-footer">
+            <nav aria-label="Paginación">
+                <ul class="pagination justify-content-center mb-0">
+                    {% if docentes.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1{% if search %}&search={{ search }}{% endif %}">
+                            <i class="bi bi-chevron-double-left"></i>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ docentes.previous_page_number }}{% if search %}&search={{ search }}{% endif %}">
+                            <i class="bi bi-chevron-left"></i>
+                        </a>
+                    </li>
+                    {% endif %}
+
+                    <li class="page-item active">
+                        <span class="page-link">
+                            Página {{ docentes.number }} de {{ docentes.paginator.num_pages }}
+                        </span>
+                    </li>
+
+                    {% if docentes.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ docentes.next_page_number }}{% if search %}&search={{ search }}{% endif %}">
+                            <i class="bi bi-chevron-right"></i>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ docentes.paginator.num_pages }}{% if search %}&search={{ search }}{% endif %}">
+                            <i class="bi bi-chevron-double-right"></i>
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

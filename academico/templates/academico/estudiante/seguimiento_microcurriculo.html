@@ -1,0 +1,139 @@
+{% extends 'academico/base.html' %}
+
+{% block title %}Microcurrículos{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2><i class="bi bi-file-text text-warning"></i> Microcurrículos del Programa</h2>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'estudiante_dashboard' %}">Dashboard</a></li>
+                    <li class="breadcrumb-item active">Microcurrículos</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <div class="alert alert-info">
+        <i class="bi bi-info-circle"></i>
+        <strong>Información:</strong> Aquí puedes consultar los microcurrículos de todas las materias de tu programa académico.
+    </div>
+
+    {% if microcurriculos %}
+    <div class="row g-4">
+        {% for micro in microcurriculos %}
+        <div class="col-md-6 col-lg-4">
+            <div class="card hover-card h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <h5 class="card-title">
+                            <i class="bi bi-book text-warning"></i>
+                            {{ micro.nombre_materia }}
+                        </h5>
+                        <span class="badge bg-warning">{{ micro.numero_creditos }} Créditos</span>
+                    </div>
+                    
+                    <p class="card-text">
+                        <small class="text-muted">{{ micro.descripcion_asignatura|truncatewords:20 }}</small>
+                    </p>
+
+                    <div class="mb-3">
+                        <p class="mb-1">
+                            <i class="bi bi-tag"></i>
+                            <strong>Tipo:</strong> {{ micro.get_tipo_asignatura_display }}
+                        </p>
+                        <p class="mb-1">
+                            <i class="bi bi-bookmark"></i>
+                            <strong>Naturaleza:</strong> {{ micro.get_naturaleza_asignatura_display }}
+                        </p>
+                        <p class="mb-0">
+                            <i class="bi bi-building"></i>
+                            <strong>Departamento:</strong> {{ micro.departamento_oferente|truncatewords:3 }}
+                        </p>
+                    </div>
+
+                    <!-- Detalles Colapsables -->
+                    <div class="accordion accordion-flush" id="accordion{{ micro.codigo_microcurriculo }}">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ micro.codigo_microcurriculo }}">
+                                    <i class="bi bi-eye"></i> Ver más información
+                                </button>
+                            </h2>
+                            <div id="collapse{{ micro.codigo_microcurriculo }}" class="accordion-collapse collapse" data-bs-parent="#accordion{{ micro.codigo_microcurriculo }}">
+                                <div class="accordion-body">
+                                    <h6><strong>Objetivo General:</strong></h6>
+                                    <p><small>{{ micro.objetivo_general|truncatewords:30 }}</small></p>
+                                    
+                                    {% if micro.prerequisitos %}
+                                    <h6><strong>Prerequisitos:</strong></h6>
+                                    <p><small>{{ micro.prerequisitos }}</small></p>
+                                    {% endif %}
+
+                                    <h6><strong>Evaluación:</strong></h6>
+                                    <ul class="list-unstyled">
+                                        <li><small>• Primer Parcial: {{ micro.primer_parcial }}%</small></li>
+                                        <li><small>• Segundo Parcial: {{ micro.segundo_parcial }}%</small></li>
+                                        <li><small>• Tercer Parcial: {{ micro.tercer_parcial }}%</small></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% else %}
+    <div class="card">
+        <div class="card-body text-center py-5">
+            <i class="bi bi-inbox" style="font-size: 4rem; color: #ccc;"></i>
+            <h4 class="mt-3 text-muted">No hay microcurrículos disponibles</h4>
+            <p class="text-muted">Los microcurrículos de tu programa aparecerán aquí</p>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Información Adicional -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-lightbulb"></i> ¿Qué es un Microcurrículo?</h5>
+                </div>
+                <div class="card-body">
+                    <p>
+                        El microcurrículo es un documento que contiene toda la información académica de cada materia, incluyendo:
+                    </p>
+                    <ul>
+                        <li><strong>Objetivos de aprendizaje:</strong> Lo que aprenderás en la materia</li>
+                        <li><strong>Contenidos temáticos:</strong> Los temas que se cubrirán</li>
+                        <li><strong>Metodología:</strong> Cómo se desarrollará la clase</li>
+                        <li><strong>Sistema de evaluación:</strong> Cómo serás calificado</li>
+                        <li><strong>Competencias:</strong> Habilidades que desarrollarás</li>
+                        <li><strong>Referencias bibliográficas:</strong> Materiales de estudio recomendados</li>
+                    </ul>
+                    <div class="alert alert-success mt-3">
+                        <i class="bi bi-check-circle"></i>
+                        <strong>Consejo:</strong> Revisa el microcurrículo al inicio de cada materia para conocer qué se espera de ti durante el semestre.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .hover-card {
+        transition: all 0.3s ease;
+    }
+    .hover-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    }
+</style>
+{% endblock %}

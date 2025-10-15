@@ -1,0 +1,187 @@
+{% extends 'academico/base.html' %}
+{% load static %}
+
+{% block title %}Dashboard Administrador - Sistema Académico{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2><i class="bi bi-speedometer2 text-primary"></i> Panel de Administración</h2>
+            <p class="text-muted">Bienvenido al sistema de gestión académica</p>
+        </div>
+    </div>
+
+    <!-- Tarjetas de Estadísticas -->
+    <div class="row g-4 mb-4">
+        <div class="col-xl-3 col-md-6">
+            <div class="card stat-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                <div class="card-body text-center">
+                    <i class="bi bi-people-fill" style="font-size: 3rem;"></i>
+                    <div class="number mt-3">{{ total_estudiantes }}</div>
+                    <div class="label">Estudiantes</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card stat-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                <div class="card-body text-center">
+                    <i class="bi bi-person-workspace" style="font-size: 3rem;"></i>
+                    <div class="number mt-3">{{ total_docentes }}</div>
+                    <div class="label">Docentes</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card stat-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                <div class="card-body text-center">
+                    <i class="bi bi-person-badge" style="font-size: 3rem;"></i>
+                    <div class="number mt-3">{{ total_coordinadores }}</div>
+                    <div class="label">Coordinadores</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card stat-card" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                <div class="card-body text-center">
+                    <i class="bi bi-journal-code" style="font-size: 3rem;"></i>
+                    <div class="number mt-3">{{ total_programas }}</div>
+                    <div class="label">Programas</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Estadísticas Adicionales -->
+    <div class="row g-4 mb-4">
+        <div class="col-xl-4 col-md-6">
+            <div class="card dashboard-card">
+                <div class="card-body text-center">
+                    <i class="bi bi-building text-info icon"></i>
+                    <h3>{{ total_facultades }}</h3>
+                    <p>Facultades Registradas</p>
+                    <a href="{% url 'facultades_lista' %}" class="btn btn-outline-info btn-sm">
+                        <i class="bi bi-eye"></i> Ver Detalles
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-4 col-md-6">
+            <div class="card dashboard-card">
+                <div class="card-body text-center">
+                    <i class="bi bi-book text-warning icon"></i>
+                    <h3>{{ total_materias }}</h3>
+                    <p>Materias Disponibles</p>
+                    <a href="{% url 'materias_lista' %}" class="btn btn-outline-warning btn-sm">
+                        <i class="bi bi-eye"></i> Ver Detalles
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-4 col-md-6">
+            <div class="card dashboard-card">
+                <div class="card-body text-center">
+                    <i class="bi bi-door-closed text-secondary icon"></i>
+                    <h3>{{ total_aulas }}</h3>
+                    <p>Aulas Disponibles</p>
+                    <a href="{% url 'aulas_lista' %}" class="btn btn-outline-secondary btn-sm">
+                        <i class="bi bi-eye"></i> Ver Detalles
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Accesos Rápidos -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h4 class="mb-3"><i class="bi bi-lightning-fill text-warning"></i> Accesos Rápidos</h4>
+        </div>
+    </div>
+
+    <div class="row g-3">
+        <div class="col-lg-3 col-md-6">
+            <a href="{% url 'estudiante_crear' %}" class="text-decoration-none">
+                <div class="card hover-card">
+                    <div class="card-body text-center">
+                        <i class="bi bi-person-plus-fill text-primary" style="font-size: 2.5rem;"></i>
+                        <h6 class="mt-3">Nuevo Estudiante</h6>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <a href="{% url 'docente_crear' %}" class="text-decoration-none">
+                <div class="card hover-card">
+                    <div class="card-body text-center">
+                        <i class="bi bi-person-workspace text-success" style="font-size: 2.5rem;"></i>
+                        <h6 class="mt-3">Nuevo Docente</h6>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <a href="{% url 'programa_crear' %}" class="text-decoration-none">
+                <div class="card hover-card">
+                    <div class="card-body text-center">
+                        <i class="bi bi-journal-plus text-info" style="font-size: 2.5rem;"></i>
+                        <h6 class="mt-3">Nuevo Programa</h6>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <a href="{% url 'materia_crear' %}" class="text-decoration-none">
+                <div class="card hover-card">
+                    <div class="card-body text-center">
+                        <i class="bi bi-book text-warning" style="font-size: 2.5rem;"></i>
+                        <h6 class="mt-3">Nueva Materia</h6>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Información del Sistema -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0"><i class="bi bi-info-circle"></i> Información del Sistema</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Versión:</strong> 1.0.0</p>
+                            <p><strong>Última actualización:</strong> Octubre 2025</p>
+                            <p><strong>Estado:</strong> <span class="badge bg-success">Operativo</span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Base de datos:</strong> PostgreSQL</p>
+                            <p><strong>Framework:</strong> Django 4.2</p>
+                            <p><strong>Interfaz:</strong> Bootstrap 5</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .hover-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+        transition: all 0.3s ease;
+    }
+</style>
+{% endblock %}

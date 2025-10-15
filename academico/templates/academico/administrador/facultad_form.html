@@ -1,0 +1,95 @@
+{% extends 'academico/base.html' %}
+
+{% block title %}{% if editar %}Editar{% else %}Nueva{% endif %} Facultad{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2>
+                <i class="bi bi-building text-info"></i>
+                {% if editar %}Editar Facultad{% else %}Nueva Facultad{% endif %}
+            </h2>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'index' %}">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'facultades_lista' %}">Facultades</a></li>
+                    <li class="breadcrumb-item active">{% if editar %}Editar{% else %}Nueva{% endif %}</li>
+                </ol>
+            </nav>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="{% url 'facultades_lista' %}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Volver
+            </a>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <form method="post" class="needs-validation" novalidate>
+                {% csrf_token %}
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-info-circle"></i> Información de la Facultad</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            {% if not editar %}
+                            <div class="col-md-12">
+                                <label for="codigo" class="form-label">Código de Facultad *</label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="codigo" 
+                                       name="codigo" 
+                                       placeholder="Ej: FAC001"
+                                       value="{{ facultad.codigo_facultad|default:'' }}" 
+                                       required>
+                                <small class="text-muted">Código único e irrepetible para identificar la facultad</small>
+                            </div>
+                            {% endif %}
+
+                            <div class="col-md-12">
+                                <label for="nombre" class="form-label">Nombre de la Facultad *</label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="nombre" 
+                                       name="nombre" 
+                                       placeholder="Ej: Facultad de Ingeniería"
+                                       value="{{ facultad.nombre_facultad|default:'' }}" 
+                                       required>
+                            </div>
+
+                            <div class="col-md-12">
+                                <label for="numero_programas" class="form-label">Número de Programas</label>
+                                <input type="number" 
+                                       class="form-control" 
+                                       id="numero_programas" 
+                                       name="numero_programas" 
+                                       value="{{ facultad.numero_programas|default:'0' }}"
+                                       min="0">
+                                <small class="text-muted">Este valor se actualiza automáticamente al crear programas</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <a href="{% url 'facultades_lista' %}" class="btn btn-secondary">
+                                    <i class="bi bi-x-circle"></i> Cancelar
+                                </a>
+                            </div>
+                            <div class="col-md-6 text-end">
+                                <button type="submit" class="btn btn-info text-white btn-lg">
+                                    <i class="bi bi-save"></i> {% if editar %}Actualizar{% else %}Guardar{% endif %} Facultad
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

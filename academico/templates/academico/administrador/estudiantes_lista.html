@@ -1,0 +1,177 @@
+{% extends 'academico/base.html' %}
+{% load static %}
+
+{% block title %}Estudiantes - Sistema Académico{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <h2><i class="bi bi-people-fill text-primary"></i> Gestión de Estudiantes</h2>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'index' %}">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'administrador_dashboard' %}">Administrador</a></li>
+                    <li class="breadcrumb-item active">Estudiantes</li>
+                </ol>
+            </nav>
+        </div>
+        <div class="col-md-6 text-end">
+            <a href="{% url 'estudiante_crear' %}" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Nuevo Estudiante
+            </a>
+        </div>
+    </div>
+
+    <!-- Filtros y búsqueda -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-5">
+                    <label class="form-label">Buscar</label>
+                    <input type="text" 
+                           name="search" 
+                           class="form-control" 
+                           placeholder="Nombre, apellido, correo o ID"
+                           value="{{ search }}">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Programa</label>
+                    <select name="programa" class="form-select">
+                        <option value="">Todos los programas</option>
+                        {% for programa in programas %}
+                        <option value="{{ programa.codigo_programa }}" 
+                                {% if programa_filter == programa.codigo_programa %}selected{% endif %}>
+                            {{ programa.nombre_programa }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">&nbsp;</label>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-search"></i> Buscar
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Tabla de estudiantes -->
+    <div class="card shadow-sm">
+        <div class="card-header">
+            <h5 class="mb-0">
+                <i class="bi bi-table"></i> Lista de Estudiantes 
+                <span class="badge bg-primary">{{ estudiantes.paginator.count }}</span>
+            </h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre Completo</th>
+                            <th>Documento</th>
+                            <th>Correo</th>
+                            <th>Celular</th>
+                            <th>Programa</th>
+                            <th>Facultad</th>
+                            <th class="text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for estudiante in estudiantes %}
+                        <tr>
+                            <td><strong>{{ estudiante.id_estudiante }}</strong></td>
+                            <td>
+                                <i class="bi bi-person-circle text-primary"></i>
+                                {{ estudiante.nombre }} {{ estudiante.apellido }}
+                            </td>
+                            <td>
+                                <span class="badge bg-secondary">{{ estudiante.get_tipo_documento_display }}</span>
+                            </td>
+                            <td>
+                                <i class="bi bi-envelope"></i> {{ estudiante.correo }}
+                            </td>
+                            <td>
+                                <i class="bi bi-phone"></i> {{ estudiante.celular }}
+                            </td>
+                            <td>{{ estudiante.programa.nombre_programa }}</td>
+                            <td>{{ estudiante.facultad.nombre_facultad }}</td>
+                            <td class="text-center">
+                                <div class="btn-group" role="group">
+                                    <a href="{% url 'estudiante_editar' estudiante.id_estudiante %}" 
+                                       class="btn btn-sm btn-warning"
+                                       data-bs-toggle="tooltip"
+                                       title="Editar">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a href="{% url 'estudiante_eliminar' estudiante.id_estudiante %}" 
+                                       class="btn btn-sm btn-danger"
+                                       data-bs-toggle="tooltip"
+                                       title="Eliminar">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="8" class="text-center py-5">
+                                <i class="bi bi-inbox" style="font-size: 3rem; color: #ccc;"></i>
+                                <p class="text-muted mt-3">No se encontraron estudiantes</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Paginación -->
+        {% if estudiantes.has_other_pages %}
+        <div class="card-footer">
+            <nav aria-label="Paginación">
+                <ul class="pagination justify-content-center mb-0">
+                    {% if estudiantes.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1{% if search %}&search={{ search }}{% endif %}{% if programa_filter %}&programa={{ programa_filter }}{% endif %}">
+                            <i class="bi bi-chevron-double-left"></i>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ estudiantes.previous_page_number }}{% if search %}&search={{ search }}{% endif %}{% if programa_filter %}&programa={{ programa_filter }}{% endif %}">
+                            <i class="bi bi-chevron-left"></i>
+                        </a>
+                    </li>
+                    {% endif %}
+
+                    <li class="page-item active">
+                        <span class="page-link">
+                            Página {{ estudiantes.number }} de {{ estudiantes.paginator.num_pages }}
+                        </span>
+                    </li>
+
+                    {% if estudiantes.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ estudiantes.next_page_number }}{% if search %}&search={{ search }}{% endif %}{% if programa_filter %}&programa={{ programa_filter }}{% endif %}">
+                            <i class="bi bi-chevron-right"></i>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ estudiantes.paginator.num_pages }}{% if search %}&search={{ search }}{% endif %}{% if programa_filter %}&programa={{ programa_filter }}{% endif %}">
+                            <i class="bi bi-chevron-double-right"></i>
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

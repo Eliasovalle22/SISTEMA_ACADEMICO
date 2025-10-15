@@ -1,0 +1,230 @@
+{% extends 'academico/base.html' %}
+
+{% block title %}{% if editar %}Editar{% else %}Nuevo{% endif %} Microcurrículo{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2>
+                <i class="bi bi-file-text text-success"></i>
+                {% if editar %}Editar Microcurrículo{% else %}Nuevo Microcurrículo{% endif %}
+            </h2>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'coordinador_dashboard' %}">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'microcurriculos_lista' %}">Microcurrículos</a></li>
+                    <li class="breadcrumb-item active">{% if editar %}Editar{% else %}Nuevo{% endif %}</li>
+                </ol>
+            </nav>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="{% url 'microcurriculos_lista' %}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Volver
+            </a>
+        </div>
+    </div>
+
+    <form method="post" class="needs-validation" novalidate>
+        {% csrf_token %}
+        
+        <!-- Información Básica -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-info-circle"></i> Información Básica</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    {% if not editar %}
+                    <div class="col-md-12">
+                        <label for="codigo" class="form-label">Código del Microcurrículo *</label>
+                        <input type="text" class="form-control" id="codigo" name="codigo" 
+                               placeholder="Ej: MICRO001" required>
+                    </div>
+                    {% endif %}
+
+                    <div class="col-md-8">
+                        <label for="nombre_materia" class="form-label">Nombre de la Materia *</label>
+                        <input type="text" class="form-control" id="nombre_materia" name="nombre_materia" 
+                               value="{{ microcurriculo.nombre_materia|default:'' }}" required>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="creditos" class="form-label">Créditos *</label>
+                        <input type="number" class="form-control" id="creditos" name="creditos" 
+                               value="{{ microcurriculo.numero_creditos|default:'' }}" min="1" required>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="tipo_asignatura" class="form-label">Tipo de Asignatura *</label>
+                        <select class="form-select" id="tipo_asignatura" name="tipo_asignatura" required>
+                            <option value="">Seleccione...</option>
+                            <option value="OB" {% if microcurriculo.tipo_asignatura == 'OB' %}selected{% endif %}>Obligatoria</option>
+                            <option value="OP" {% if microcurriculo.tipo_asignatura == 'OP' %}selected{% endif %}>Optativa</option>
+                            <option value="EL" {% if microcurriculo.tipo_asignatura == 'EL' %}selected{% endif %}>Electiva</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="naturaleza_asignatura" class="form-label">Naturaleza *</label>
+                        <select class="form-select" id="naturaleza_asignatura" name="naturaleza_asignatura" required>
+                            <option value="">Seleccione...</option>
+                            <option value="TE" {% if microcurriculo.naturaleza_asignatura == 'TE' %}selected{% endif %}>Teórica</option>
+                            <option value="PR" {% if microcurriculo.naturaleza_asignatura == 'PR' %}selected{% endif %}>Práctica</option>
+                            <option value="TP" {% if microcurriculo.naturaleza_asignatura == 'TP' %}selected{% endif %}>Teórico-Práctica</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="departamento_oferente" class="form-label">Departamento Oferente *</label>
+                        <input type="text" class="form-control" id="departamento_oferente" name="departamento_oferente" 
+                               value="{{ microcurriculo.departamento_oferente|default:'' }}" required>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Descripción y Objetivos -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-file-text"></i> Descripción y Objetivos</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-12">
+                        <label for="descripcion" class="form-label">Descripción de la Asignatura *</label>
+                        <textarea class="form-control" id="descripcion" name="descripcion" rows="3" required>{{ microcurriculo.descripcion_asignatura|default:'' }}</textarea>
+                    </div>
+
+                    <div class="col-md-12">
+                        <label for="prerequisitos" class="form-label">Prerequisitos</label>
+                        <textarea class="form-control" id="prerequisitos" name="prerequisitos" rows="2">{{ microcurriculo.prerequisitos|default:'' }}</textarea>
+                    </div>
+
+                    <div class="col-md-12">
+                        <label for="objetivo_general" class="form-label">Objetivo General *</label>
+                        <textarea class="form-control" id="objetivo_general" name="objetivo_general" rows="3" required>{{ microcurriculo.objetivo_general|default:'' }}</textarea>
+                    </div>
+
+                    <div class="col-md-12">
+                        <label for="objetivos_especificos" class="form-label">Objetivos Específicos *</label>
+                        <textarea class="form-control" id="objetivos_especificos" name="objetivos_especificos" rows="4" required>{{ microcurriculo.objetivos_especificos|default:'' }}</textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Competencias y Metodología -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-trophy"></i> Competencias y Metodología</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-12">
+                        <label for="competencias_genericas" class="form-label">Competencias Genéricas *</label>
+                        <textarea class="form-control" id="competencias_genericas" name="competencias_genericas" rows="3" required>{{ microcurriculo.competencias_genericas|default:'' }}</textarea>
+                    </div>
+
+                    <div class="col-md-12">
+                        <label for="estrategias" class="form-label">Estrategias Pedagógicas y Metodológicas *</label>
+                        <textarea class="form-control" id="estrategias" name="estrategias" rows="4" required>{{ microcurriculo.estrategias_pedagogicas_metodologicas|default:'' }}</textarea>
+                    </div>
+
+                    <div class="col-md-12">
+                        <label for="referencias" class="form-label">Referencias Bibliográficas *</label>
+                        <textarea class="form-control" id="referencias" name="referencias" rows="4" required>{{ microcurriculo.referencias_bibliograficas|default:'' }}</textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Niveles de Desempeño -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-bar-chart"></i> Niveles de Desempeño</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="nivel_superior" class="form-label">Nivel Superior *</label>
+                        <textarea class="form-control" id="nivel_superior" name="nivel_superior" rows="3" required>{{ microcurriculo.nivel_superior|default:'' }}</textarea>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="nivel_normal" class="form-label">Nivel Normal *</label>
+                        <textarea class="form-control" id="nivel_normal" name="nivel_normal" rows="3" required>{{ microcurriculo.nivel_normal|default:'' }}</textarea>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="nivel_bajo" class="form-label">Nivel Bajo *</label>
+                        <textarea class="form-control" id="nivel_bajo" name="nivel_bajo" rows="3" required>{{ microcurriculo.nivel_bajo|default:'' }}</textarea>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="nivel_deficiente" class="form-label">Nivel Deficiente *</label>
+                        <textarea class="form-control" id="nivel_deficiente" name="nivel_deficiente" rows="3" required>{{ microcurriculo.nivel_deficiente|default:'' }}</textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Evaluación -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-clipboard-check"></i> Porcentajes de Evaluación</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label for="primer_parcial" class="form-label">Primer Parcial (%) *</label>
+                        <input type="number" class="form-control parcial-input" id="primer_parcial" name="primer_parcial" 
+                               value="{{ microcurriculo.primer_parcial|default:'33.33' }}" 
+                               min="0" max="100" step="0.01" required>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="segundo_parcial" class="form-label">Segundo Parcial (%) *</label>
+                        <input type="number" class="form-control parcial-input" id="segundo_parcial" name="segundo_parcial" 
+                               value="{{ microcurriculo.segundo_parcial|default:'33.33' }}" 
+                               min="0" max="100" step="0.01" required>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="tercer_parcial" class="form-label">Tercer Parcial (%) *</label>
+                        <input type="number" class="form-control parcial-input" id="tercer_parcial" name="tercer_parcial" 
+                               value="{{ microcurriculo.tercer_parcial|default:'33.34' }}" 
+                               min="0" max="100" step="0.01" required>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle"></i>
+                            <strong id="total-porcentaje">Total: 100%</strong>
+                            <span class="ms-2">Los porcentajes deben sumar 100%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Botones -->
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <a href="{% url 'microcurriculos_lista' %}" class="btn btn-secondary">
+                            <i class="bi bi-x-circle"></i> Cancelar
+                        </a>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <button type="submit" class="btn btn-success btn-lg">
+                            <i class="bi bi-save"></i> {% if editar %}Actualizar{% else %}Guardar{% endif %}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

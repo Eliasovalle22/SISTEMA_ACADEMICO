@@ -1,0 +1,131 @@
+{% extends 'academico/base.html' %}
+
+{% block title %}Inscribir Materia{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2>
+                <i class="bi bi-calendar-plus text-success"></i>
+                Inscribir Nueva Materia
+            </h2>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'estudiante_dashboard' %}">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'estudiante_horario' %}">Mi Horario</a></li>
+                    <li class="breadcrumb-item active">Inscribir Materia</li>
+                </ol>
+            </nav>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="{% url 'estudiante_horario' %}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Volver
+            </a>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="alert alert-info">
+                <i class="bi bi-info-circle"></i>
+                <strong>Importante:</strong> Asegúrate de verificar que no tengas cruces de horario con otras materias ya inscritas.
+            </div>
+
+            <form method="post" class="needs-validation" novalidate>
+                {% csrf_token %}
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-file-text"></i> Información de la Materia</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-12">
+                                <label for="materia" class="form-label">Materia *</label>
+                                <select class="form-select" id="materia" name="materia" required>
+                                    <option value="">Seleccione una materia...</option>
+                                    {% for materia in materias %}
+                                    <option value="{{ materia.codigo_materia }}">
+                                        {{ materia.nombre_materia }} ({{ materia.numero_creditos }} créditos)
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label for="dia" class="form-label">Día *</label>
+                                <select class="form-select" id="dia" name="dia" required>
+                                    <option value="">Seleccione un día...</option>
+                                    <option value="LU">Lunes</option>
+                                    <option value="MA">Martes</option>
+                                    <option value="MI">Miércoles</option>
+                                    <option value="JU">Jueves</option>
+                                    <option value="VI">Viernes</option>
+                                    <option value="SA">Sábado</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label for="hora" class="form-label">Hora *</label>
+                                <input type="time" 
+                                       class="form-control" 
+                                       id="hora" 
+                                       name="hora" 
+                                       required>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label for="grupo" class="form-label">Grupo *</label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="grupo" 
+                                       name="grupo" 
+                                       placeholder="Ej: A1, B2, C3"
+                                       required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="aula" class="form-label">Aula *</label>
+                                <select class="form-select" id="aula" name="aula" required>
+                                    <option value="">Seleccione un aula...</option>
+                                    {% for aula in aulas %}
+                                    <option value="{{ aula.codigo_aula }}">
+                                        {{ aula.nombre_aula }} (Capacidad: {{ aula.capacidad }})
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="periodo" class="form-label">Periodo Académico *</label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="periodo" 
+                                       name="periodo" 
+                                       placeholder="Ej: 2025-1"
+                                       value="2025-1"
+                                       required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <a href="{% url 'estudiante_horario' %}" class="btn btn-secondary">
+                                    <i class="bi bi-x-circle"></i> Cancelar
+                                </a>
+                            </div>
+                            <div class="col-md-6 text-end">
+                                <button type="submit" class="btn btn-success btn-lg">
+                                    <i class="bi bi-check-circle"></i> Inscribir Materia
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

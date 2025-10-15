@@ -1,0 +1,258 @@
+{% extends 'academico/base.html' %}
+{% load static %}
+
+{% block title %}{% if editar %}Editar{% else %}Nuevo{% endif %} Estudiante - Sistema Académico{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2>
+                <i class="bi bi-person-plus-fill text-primary"></i> 
+                {% if editar %}Editar Estudiante{% else %}Nuevo Estudiante{% endif %}
+            </h2>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'index' %}">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'estudiantes_lista' %}">Estudiantes</a></li>
+                    <li class="breadcrumb-item active">{% if editar %}Editar{% else %}Nuevo{% endif %}</li>
+                </ol>
+            </nav>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="{% url 'estudiantes_lista' %}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Volver
+            </a>
+        </div>
+    </div>
+
+    <!-- Formulario -->
+    <form method="post" class="needs-validation" novalidate>
+        {% csrf_token %}
+        
+        <!-- Información Personal -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-person"></i> Información Personal</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label for="tipo_documento" class="form-label">Tipo de Documento *</label>
+                        <select class="form-select" id="tipo_documento" name="tipo_documento" required>
+                            <option value="">Seleccione...</option>
+                            <option value="CC" {% if estudiante.tipo_documento == 'CC' %}selected{% endif %}>Cédula de Ciudadanía</option>
+                            <option value="TI" {% if estudiante.tipo_documento == 'TI' %}selected{% endif %}>Tarjeta de Identidad</option>
+                            <option value="CE" {% if estudiante.tipo_documento == 'CE' %}selected{% endif %}>Cédula de Extranjería</option>
+                            <option value="PA" {% if estudiante.tipo_documento == 'PA' %}selected{% endif %}>Pasaporte</option>
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <label for="fecha_expedicion" class="form-label">Fecha de Expedición *</label>
+                        <input type="date" class="form-control" id="fecha_expedicion" name="fecha_expedicion" 
+                               value="{% if estudiante %}{{ estudiante.fecha_expedicion|date:'Y-m-d' }}{% endif %}" required>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="fecha_nacimiento" class="form-label">Fecha de Nacimiento *</label>
+                        <input type="date" class="form-control" id="fecha_nacimiento" name="fecha_nacimiento" 
+                               value="{% if estudiante %}{{ estudiante.fecha_nacimiento|date:'Y-m-d' }}{% endif %}" required>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="nombre" class="form-label">Nombre *</label>
+                        <input type="text" class="form-control" id="nombre" name="nombre" 
+                               value="{{ estudiante.nombre|default:'' }}" required>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="apellido" class="form-label">Apellido *</label>
+                        <input type="text" class="form-control" id="apellido" name="apellido" 
+                               value="{{ estudiante.apellido|default:'' }}" required>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="sexo" class="form-label">Sexo *</label>
+                        <select class="form-select" id="sexo" name="sexo" required>
+                            <option value="">Seleccione...</option>
+                            <option value="M" {% if estudiante.sexo == 'M' %}selected{% endif %}>Masculino</option>
+                            <option value="F" {% if estudiante.sexo == 'F' %}selected{% endif %}>Femenino</option>
+                            <option value="O" {% if estudiante.sexo == 'O' %}selected{% endif %}>Otro</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="estado_civil" class="form-label">Estado Civil *</label>
+                        <select class="form-select" id="estado_civil" name="estado_civil" required>
+                            <option value="">Seleccione...</option>
+                            <option value="S" {% if estudiante.estado_civil == 'S' %}selected{% endif %}>Soltero</option>
+                            <option value="C" {% if estudiante.estado_civil == 'C' %}selected{% endif %}>Casado</option>
+                            <option value="U" {% if estudiante.estado_civil == 'U' %}selected{% endif %}>Unión Libre</option>
+                            <option value="D" {% if estudiante.estado_civil == 'D' %}selected{% endif %}>Divorciado</option>
+                            <option value="V" {% if estudiante.estado_civil == 'V' %}selected{% endif %}>Viudo</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="puntaje_icfes" class="form-label">Puntaje ICFES</label>
+                        <input type="number" step="0.01" class="form-control" id="puntaje_icfes" name="puntaje_icfes" 
+                               value="{{ estudiante.puntaje_icfes|default:'' }}">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Información de Contacto -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-telephone"></i> Información de Contacto</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="celular" class="form-label">Celular *</label>
+                        <input type="tel" class="form-control" id="celular" name="celular" 
+                               value="{{ estudiante.celular|default:'' }}" required>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="correo" class="form-label">Correo Electrónico *</label>
+                        <input type="email" class="form-control" id="correo" name="correo" 
+                               value="{{ estudiante.correo|default:'' }}" required>
+                    </div>
+
+                    <div class="col-md-12">
+                        <label for="direccion" class="form-label">Dirección *</label>
+                        <input type="text" class="form-control" id="direccion" name="direccion" 
+                               value="{{ estudiante.direccion|default:'' }}" required>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="ciudad" class="form-label">Ciudad *</label>
+                        <input type="text" class="form-control" id="ciudad" name="ciudad" 
+                               value="{{ estudiante.ciudad|default:'' }}" required>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="departamento" class="form-label">Departamento *</label>
+                        <input type="text" class="form-control" id="departamento" name="departamento" 
+                               value="{{ estudiante.departamento|default:'' }}" required>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="pais" class="form-label">País *</label>
+                        <input type="text" class="form-control" id="pais" name="pais" 
+                               value="{{ estudiante.pais|default:'Colombia' }}" required>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Información Académica -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-book"></i> Información Académica</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="facultad" class="form-label">Facultad *</label>
+                        <select class="form-select" id="id_facultad" name="facultad" required>
+                            <option value="">Seleccione una facultad...</option>
+                            {% for facultad in facultades %}
+                            <option value="{{ facultad.codigo_facultad }}" 
+                                    {% if estudiante.facultad.codigo_facultad == facultad.codigo_facultad %}selected{% endif %}>
+                                {{ facultad.nombre_facultad }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="programa" class="form-label">Programa *</label>
+                        <select class="form-select" id="id_programa" name="programa" required>
+                            <option value="">Seleccione un programa...</option>
+                            {% for programa in programas %}
+                            <option value="{{ programa.codigo_programa }}" 
+                                    {% if estudiante.programa.codigo_programa == programa.codigo_programa %}selected{% endif %}>
+                                {{ programa.nombre_programa }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="sisben" class="form-label">SISBEN</label>
+                        <input type="text" class="form-control" id="sisben" name="sisben" 
+                               value="{{ estudiante.sisben|default:'' }}">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Información del Acudiente -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-person-check"></i> Información del Acudiente</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label for="nombre_acudiente" class="form-label">Nombre del Acudiente *</label>
+                        <input type="text" class="form-control" id="nombre_acudiente" name="nombre_acudiente" 
+                               value="{{ estudiante.nombre_acudiente|default:'' }}" required>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="apellido_acudiente" class="form-label">Apellido del Acudiente *</label>
+                        <input type="text" class="form-control" id="apellido_acudiente" name="apellido_acudiente" 
+                               value="{{ estudiante.apellido_acudiente|default:'' }}" required>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="celular_acudiente" class="form-label">Celular del Acudiente *</label>
+                        <input type="tel" class="form-control" id="celular_acudiente" name="celular_acudiente" 
+                               value="{{ estudiante.celular_acudiente|default:'' }}" required>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if not editar %}
+        <!-- Contraseña (solo para nuevo) -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-lock"></i> Credenciales de Acceso</h5>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle"></i>
+                    Se generará una contraseña temporal: <strong>temporal123</strong>
+                    <br>El estudiante deberá cambiarla en su primer acceso.
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Botones -->
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <a href="{% url 'estudiantes_lista' %}" class="btn btn-secondary">
+                            <i class="bi bi-x-circle"></i> Cancelar
+                        </a>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-save"></i> {% if editar %}Actualizar{% else %}Guardar{% endif %} Estudiante
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

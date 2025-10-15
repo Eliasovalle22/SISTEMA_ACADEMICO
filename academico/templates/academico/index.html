@@ -1,0 +1,191 @@
+{% extends 'academico/base.html' %}
+
+{% block title %}Inicio - Sistema Académico{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-12 text-center my-5">
+            <h1 class="display-4">
+                <i class="bi bi-mortarboard-fill text-primary"></i>
+                Bienvenido al Sistema Académico
+            </h1>
+            <p class="lead text-muted">Gestión integral para instituciones educativas</p>
+        </div>
+    </div>
+
+    {% if user.is_authenticated %}
+    <div class="row g-4 mt-4">
+        <!-- Dashboard según rol del usuario -->
+        {% if user.is_staff or user.is_superuser %}
+        <!-- Panel de Administrador -->
+        <div class="col-12">
+            <h2 class="mb-4"><i class="bi bi-speedometer2"></i> Panel de Administración</h2>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm hover-card">
+                <div class="card-body">
+                    <i class="bi bi-people-fill text-primary" style="font-size: 3rem;"></i>
+                    <h5 class="card-title mt-3">Estudiantes</h5>
+                    <p class="card-text">Gestionar estudiantes</p>
+                    <a href="{% url 'estudiantes_lista' %}" class="btn btn-primary">
+                        <i class="bi bi-arrow-right-circle"></i> Acceder
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm hover-card">
+                <div class="card-body">
+                    <i class="bi bi-person-workspace text-success" style="font-size: 3rem;"></i>
+                    <h5 class="card-title mt-3">Docentes</h5>
+                    <p class="card-text">Gestionar docentes</p>
+                    <a href="{% url 'docentes_lista' %}" class="btn btn-success">
+                        <i class="bi bi-arrow-right-circle"></i> Acceder
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm hover-card">
+                <div class="card-body">
+                    <i class="bi bi-building text-info" style="font-size: 3rem;"></i>
+                    <h5 class="card-title mt-3">Facultades</h5>
+                    <p class="card-text">Gestionar facultades</p>
+                    <a href="{% url 'facultades_lista' %}" class="btn btn-info">
+                        <i class="bi bi-arrow-right-circle"></i> Acceder
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm hover-card">
+                <div class="card-body">
+                    <i class="bi bi-journal-code text-warning" style="font-size: 3rem;"></i>
+                    <h5 class="card-title mt-3">Programas</h5>
+                    <p class="card-text">Gestionar programas</p>
+                    <a href="{% url 'programas_lista' %}" class="btn btn-warning">
+                        <i class="bi bi-arrow-right-circle"></i> Acceder
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm hover-card">
+                <div class="card-body">
+                    <i class="bi bi-book text-danger" style="font-size: 3rem;"></i>
+                    <h5 class="card-title mt-3">Materias</h5>
+                    <p class="card-text">Gestionar materias</p>
+                    <a href="{% url 'materias_lista' %}" class="btn btn-danger">
+                        <i class="bi bi-arrow-right-circle"></i> Acceder
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm hover-card">
+                <div class="card-body">
+                    <i class="bi bi-door-closed text-secondary" style="font-size: 3rem;"></i>
+                    <h5 class="card-title mt-3">Aulas</h5>
+                    <p class="card-text">Gestionar aulas</p>
+                    <a href="{% url 'aulas_lista' %}" class="btn btn-secondary">
+                        <i class="bi bi-arrow-right-circle"></i> Acceder
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm hover-card">
+                <div class="card-body">
+                    <i class="bi bi-person-badge text-primary" style="font-size: 3rem;"></i>
+                    <h5 class="card-title mt-3">Coordinadores</h5>
+                    <p class="card-text">Gestionar coordinadores</p>
+                    <a href="{% url 'coordinadores_lista' %}" class="btn btn-primary">
+                        <i class="bi bi-arrow-right-circle"></i> Acceder
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm hover-card">
+                <div class="card-body">
+                    <i class="bi bi-gear-fill text-dark" style="font-size: 3rem;"></i>
+                    <h5 class="card-title mt-3">Configuración</h5>
+                    <p class="card-text">Panel administrativo</p>
+                    <a href="/admin/" class="btn btn-dark">
+                        <i class="bi bi-arrow-right-circle"></i> Acceder
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    
+    {% else %}
+    <!-- Vista para usuarios no autenticados -->
+    <div class="row mt-5">
+        <div class="col-md-8 mx-auto">
+            <div class="card shadow-lg border-0">
+                <div class="card-body text-center p-5">
+                    <i class="bi bi-lock-fill text-primary" style="font-size: 4rem;"></i>
+                    <h3 class="mt-4">Acceso Restringido</h3>
+                    <p class="text-muted mb-4">Para acceder al sistema académico, debes iniciar sesión con tus credenciales.</p>
+                    <a href="{% url 'login' %}" class="btn btn-primary btn-lg">
+                        <i class="bi bi-box-arrow-in-right"></i> Iniciar Sesión
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Características del Sistema -->
+    <div class="row mt-5 pt-5">
+        <div class="col-12 text-center mb-4">
+            <h2>Características del Sistema</h2>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="text-center p-4">
+                <i class="bi bi-calendar-check text-success" style="font-size: 3rem;"></i>
+                <h4 class="mt-3">Control de Asistencia</h4>
+                <p class="text-muted">Registro automatizado de asistencia con sensores y gestión manual</p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="text-center p-4">
+                <i class="bi bi-clipboard-data text-info" style="font-size: 3rem;"></i>
+                <h4 class="mt-3">Gestión Académica</h4>
+                <p class="text-muted">Administración completa de programas, materias y microcurrículos</p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="text-center p-4">
+                <i class="bi bi-graph-up text-warning" style="font-size: 3rem;"></i>
+                <h4 class="mt-3">Reportes y Estadísticas</h4>
+                <p class="text-muted">Análisis detallado del desempeño académico institucional</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .hover-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .hover-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+    }
+</style>
+{% endblock %}

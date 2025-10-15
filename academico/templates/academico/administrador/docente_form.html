@@ -1,0 +1,146 @@
+{% extends 'academico/base.html' %}
+{% load static %}
+
+{% block title %}{% if editar %}Editar{% else %}Nuevo{% endif %} Docente{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2>
+                <i class="bi bi-person-workspace text-success"></i>
+                {% if editar %}Editar Docente{% else %}Nuevo Docente{% endif %}
+            </h2>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'index' %}">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'docentes_lista' %}">Docentes</a></li>
+                    <li class="breadcrumb-item active">{% if editar %}Editar{% else %}Nuevo{% endif %}</li>
+                </ol>
+            </nav>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="{% url 'docentes_lista' %}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Volver
+            </a>
+        </div>
+    </div>
+
+    <form method="post" class="needs-validation" novalidate>
+        {% csrf_token %}
+        
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-person"></i> Información Personal</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="nombre" class="form-label">Nombre *</label>
+                        <input type="text" class="form-control" id="nombre" name="nombre" 
+                               value="{{ docente.nombre_docente|default:'' }}" required>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="apellido" class="form-label">Apellido *</label>
+                        <input type="text" class="form-control" id="apellido" name="apellido" 
+                               value="{{ docente.apellido_docente|default:'' }}" required>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="fecha_nacimiento" class="form-label">Fecha de Nacimiento *</label>
+                        <input type="date" class="form-control" id="fecha_nacimiento" name="fecha_nacimiento" 
+                               value="{% if docente %}{{ docente.fecha_nacimiento|date:'Y-m-d' }}{% endif %}" required>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="sexo" class="form-label">Sexo *</label>
+                        <select class="form-select" id="sexo" name="sexo" required>
+                            <option value="">Seleccione...</option>
+                            <option value="M" {% if docente.sexo == 'M' %}selected{% endif %}>Masculino</option>
+                            <option value="F" {% if docente.sexo == 'F' %}selected{% endif %}>Femenino</option>
+                            <option value="O" {% if docente.sexo == 'O' %}selected{% endif %}>Otro</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-telephone"></i> Información de Contacto</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="celular" class="form-label">Celular *</label>
+                        <input type="tel" class="form-control" id="celular" name="celular" 
+                               value="{{ docente.celular|default:'' }}" required>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="correo" class="form-label">Correo Electrónico *</label>
+                        <input type="email" class="form-control" id="correo" name="correo" 
+                               value="{{ docente.correo|default:'' }}" required>
+                    </div>
+
+                    <div class="col-md-12">
+                        <label for="direccion" class="form-label">Dirección *</label>
+                        <input type="text" class="form-control" id="direccion" name="direccion" 
+                               value="{{ docente.direccion|default:'' }}" required>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="ciudad" class="form-label">Ciudad *</label>
+                        <input type="text" class="form-control" id="ciudad" name="ciudad" 
+                               value="{{ docente.ciudad|default:'' }}" required>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="departamento" class="form-label">Departamento *</label>
+                        <input type="text" class="form-control" id="departamento" name="departamento" 
+                               value="{{ docente.departamento|default:'' }}" required>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="pais" class="form-label">País *</label>
+                        <input type="text" class="form-control" id="pais" name="pais" 
+                               value="{{ docente.pais|default:'Colombia' }}" required>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if not editar %}
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-lock"></i> Credenciales de Acceso</h5>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle"></i>
+                    Se generará una contraseña temporal: <strong>temporal123</strong>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <a href="{% url 'docentes_lista' %}" class="btn btn-secondary">
+                            <i class="bi bi-x-circle"></i> Cancelar
+                        </a>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <button type="submit" class="btn btn-success btn-lg">
+                            <i class="bi bi-save"></i> {% if editar %}Actualizar{% else %}Guardar{% endif %} Docente
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,129 @@
+{% extends 'academico/base.html' %}
+
+{% block title %}Mis Asistencias{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <h2><i class="bi bi-clipboard-check text-primary"></i> Mis Asistencias</h2>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'docente_dashboard' %}">Dashboard</a></li>
+                    <li class="breadcrumb-item active">Asistencias</li>
+                </ol>
+            </nav>
+        </div>
+        <div class="col-md-6 text-end">
+            <a href="{% url 'asistencia_crear' %}" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Nueva Asistencia
+            </a>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-header">
+            <h5 class="mb-0">
+                <i class="bi bi-table"></i> Registros de Asistencia
+                <span class="badge bg-primary">{{ asistencias.paginator.count }}</span>
+            </h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Asignatura</th>
+                            <th>Fecha</th>
+                            <th>Hora</th>
+                            <th>Aula</th>
+                            <th>Grupo</th>
+                            <th>Tema</th>
+                            <th class="text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for asistencia in asistencias %}
+                        <tr>
+                            <td><strong>{{ asistencia.codigo_asistencia }}</strong></td>
+                            <td>
+                                <i class="bi bi-book text-primary"></i>
+                                {{ asistencia.asignatura }}
+                            </td>
+                            <td>
+                                <i class="bi bi-calendar"></i>
+                                {{ asistencia.fecha|date:"d/m/Y" }}
+                            </td>
+                            <td>{{ asistencia.hora }}</td>
+                            <td>
+                                <span class="badge bg-info">{{ asistencia.aula.nombre_aula }}</span>
+                            </td>
+                            <td><strong>{{ asistencia.grupo }}</strong></td>
+                            <td>{{ asistencia.tema|truncatewords:5 }}</td>
+                            <td class="text-center">
+                                <div class="btn-group" role="group">
+                                    <a href="{% url 'asistencia_ver' asistencia.codigo_asistencia %}" 
+                                       class="btn btn-sm btn-info"
+                                       data-bs-toggle="tooltip"
+                                       title="Ver Detalle">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <a href="{% url 'asistencia_registrar' asistencia.codigo_asistencia %}" 
+                                       class="btn btn-sm btn-success"
+                                       data-bs-toggle="tooltip"
+                                       title="Registrar Asistencia">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="8" class="text-center py-5">
+                                <i class="bi bi-inbox" style="font-size: 3rem; color: #ccc;"></i>
+                                <p class="text-muted mt-3">No hay asistencias registradas</p>
+                                <a href="{% url 'asistencia_crear' %}" class="btn btn-primary">
+                                    <i class="bi bi-plus-circle"></i> Crear Primera Asistencia
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Paginación -->
+        {% if asistencias.has_other_pages %}
+        <div class="card-footer">
+            <nav aria-label="Paginación">
+                <ul class="pagination justify-content-center mb-0">
+                    {% if asistencias.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ asistencias.previous_page_number }}">
+                            <i class="bi bi-chevron-left"></i>
+                        </a>
+                    </li>
+                    {% endif %}
+
+                    <li class="page-item active">
+                        <span class="page-link">
+                            Página {{ asistencias.number }} de {{ asistencias.paginator.num_pages }}
+                        </span>
+                    </li>
+
+                    {% if asistencias.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ asistencias.next_page_number }}">
+                            <i class="bi bi-chevron-right"></i>
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

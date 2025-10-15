@@ -1,0 +1,217 @@
+{% extends 'academico/base.html' %}
+
+{% block title %}Detalle Microcurrículo{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2>
+                <i class="bi bi-file-text text-success"></i>
+                {{ microcurriculo.nombre_materia }}
+            </h2>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'coordinador_dashboard' %}">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'microcurriculos_lista' %}">Microcurrículos</a></li>
+                    <li class="breadcrumb-item active">Detalle</li>
+                </ol>
+            </nav>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="{% url 'microcurriculo_editar' microcurriculo.codigo_microcurriculo %}" class="btn btn-warning me-2">
+                <i class="bi bi-pencil"></i> Editar
+            </a>
+            <a href="{% url 'microcurriculos_lista' %}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Volver
+            </a>
+        </div>
+    </div>
+
+    <!-- Información Básica -->
+    <div class="card mb-4">
+        <div class="card-header bg-success text-white">
+            <h5 class="mb-0"><i class="bi bi-info-circle"></i> Información Básica</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Código:</strong> {{ microcurriculo.codigo_microcurriculo }}</p>
+                    <p><strong>Programa:</strong> {{ microcurriculo.programa.nombre_programa }}</p>
+                    <p><strong>Créditos:</strong> {{ microcurriculo.numero_creditos }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Tipo:</strong> {{ microcurriculo.get_tipo_asignatura_display }}</p>
+                    <p><strong>Naturaleza:</strong> {{ microcurriculo.get_naturaleza_asignatura_display }}</p>
+                    <p><strong>Departamento:</strong> {{ microcurriculo.departamento_oferente }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Descripción -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0"><i class="bi bi-file-text"></i> Descripción</h5>
+        </div>
+        <div class="card-body">
+            <p>{{ microcurriculo.descripcion_asignatura }}</p>
+            
+            {% if microcurriculo.prerequisitos %}
+            <hr>
+            <h6><strong>Prerequisitos:</strong></h6>
+            <p>{{ microcurriculo.prerequisitos }}</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Objetivos -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0"><i class="bi bi-bullseye"></i> Objetivos</h5>
+        </div>
+        <div class="card-body">
+            <h6><strong>Objetivo General:</strong></h6>
+            <p>{{ microcurriculo.objetivo_general }}</p>
+            
+            <hr>
+            
+            <h6><strong>Objetivos Específicos:</strong></h6>
+            <p>{{ microcurriculo.objetivos_especificos|linebreaks }}</p>
+        </div>
+    </div>
+
+    <!-- Competencias -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0"><i class="bi bi-trophy"></i> Competencias</h5>
+        </div>
+        <div class="card-body">
+            <h6><strong>Competencias Genéricas:</strong></h6>
+            <p>{{ microcurriculo.competencias_genericas|linebreaks }}</p>
+            
+            {% if competencias %}
+            <hr>
+            <h6><strong>Competencias Específicas:</strong></h6>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Unidad Temática</th>
+                            <th>Competencias</th>
+                            <th>Resultados de Aprendizaje</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for comp in competencias %}
+                        <tr>
+                            <td>{{ comp.unidad_tematica }}</td>
+                            <td>{{ comp.competencias_especificas }}</td>
+                            <td>{{ comp.resultados_de_aprendizaje }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Metodología -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0"><i class="bi bi-book"></i> Metodología</h5>
+        </div>
+        <div class="card-body">
+            <p>{{ microcurriculo.estrategias_pedagogicas_metodologicas|linebreaks }}</p>
+        </div>
+    </div>
+
+    <!-- Niveles de Desempeño -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0"><i class="bi bi-bar-chart"></i> Niveles de Desempeño</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div class="alert alert-success">
+                        <h6><strong>Nivel Superior</strong></h6>
+                        <p class="mb-0">{{ microcurriculo.nivel_superior }}</p>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="alert alert-info">
+                        <h6><strong>Nivel Normal</strong></h6>
+                        <p class="mb-0">{{ microcurriculo.nivel_normal }}</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="alert alert-warning">
+                        <h6><strong>Nivel Bajo</strong></h6>
+                        <p class="mb-0">{{ microcurriculo.nivel_bajo }}</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="alert alert-danger">
+                        <h6><strong>Nivel Deficiente</strong></h6>
+                        <p class="mb-0">{{ microcurriculo.nivel_deficiente }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Evaluación -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0"><i class="bi bi-clipboard-check"></i> Sistema de Evaluación</h5>
+        </div>
+        <div class="card-body">
+            <div class="row text-center">
+                <div class="col-md-4">
+                    <div class="card bg-light">
+                        <div class="card-body">
+                            <h3 class="text-primary">{{ microcurriculo.primer_parcial }}%</h3>
+                            <p class="mb-0">Primer Parcial</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-light">
+                        <div class="card-body">
+                            <h3 class="text-success">{{ microcurriculo.segundo_parcial }}%</h3>
+                            <p class="mb-0">Segundo Parcial</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-light">
+                        <div class="card-body">
+                            <h3 class="text-warning">{{ microcurriculo.tercer_parcial }}%</h3>
+                            <p class="mb-0">Tercer Parcial</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Referencias Bibliográficas -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0"><i class="bi bi-journal-text"></i> Referencias Bibliográficas</h5>
+        </div>
+        <div class="card-body">
+            <p>{{ microcurriculo.referencias_bibliograficas|linebreaks }}</p>
+        </div>
+    </div>
+
+    <!-- Botón de Impresión -->
+    <div class="text-center mb-4">
+        <button onclick="window.print()" class="btn btn-secondary btn-lg">
+            <i class="bi bi-printer"></i> Imprimir Microcurrículo
+        </button>
+    </div>
+</div>
+{% endblock %}

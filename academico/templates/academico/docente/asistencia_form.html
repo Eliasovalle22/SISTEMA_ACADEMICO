@@ -1,0 +1,145 @@
+{% extends 'academico/base.html' %}
+
+{% block title %}Nueva Asistencia{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2>
+                <i class="bi bi-clipboard-plus text-primary"></i>
+                Registrar Nueva Asistencia
+            </h2>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'docente_dashboard' %}">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'asistencias_lista' %}">Asistencias</a></li>
+                    <li class="breadcrumb-item active">Nueva</li>
+                </ol>
+            </nav>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="{% url 'asistencias_lista' %}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Volver
+            </a>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <form method="post" class="needs-validation" novalidate>
+                {% csrf_token %}
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-info-circle"></i> Información de la Clase</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="asignatura" class="form-label">Asignatura *</label>
+                                <select class="form-select" id="asignatura" name="asignatura" required>
+                                    <option value="">Seleccione una asignatura...</option>
+                                    {% for materia in materias %}
+                                    <option value="{{ materia.nombre_materia }}">
+                                        {{ materia.nombre_materia }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="codigo_asignatura" class="form-label">Código de Asignatura *</label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="codigo_asignatura" 
+                                       name="codigo_asignatura" 
+                                       placeholder="Ej: MAT001"
+                                       required>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label for="fecha" class="form-label">Fecha *</label>
+                                <input type="date" 
+                                       class="form-control" 
+                                       id="fecha" 
+                                       name="fecha" 
+                                       required>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label for="hora" class="form-label">Hora *</label>
+                                <input type="time" 
+                                       class="form-control" 
+                                       id="hora" 
+                                       name="hora" 
+                                       required>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label for="grupo" class="form-label">Grupo *</label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="grupo" 
+                                       name="grupo" 
+                                       placeholder="Ej: A1"
+                                       required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="aula" class="form-label">Aula *</label>
+                                <select class="form-select" id="aula" name="aula" required>
+                                    <option value="">Seleccione un aula...</option>
+                                    {% for aula in aulas %}
+                                    <option value="{{ aula.codigo_aula }}">
+                                        {{ aula.nombre_aula }} (Capacidad: {{ aula.capacidad }})
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="sede" class="form-label">Sede *</label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="sede" 
+                                       name="sede" 
+                                       placeholder="Ej: Sede Principal"
+                                       required>
+                            </div>
+
+                            <div class="col-md-12">
+                                <label for="tema" class="form-label">Tema de la Clase *</label>
+                                <textarea class="form-control" 
+                                          id="tema" 
+                                          name="tema" 
+                                          rows="3"
+                                          placeholder="Describa el tema tratado en la clase..."
+                                          required></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="alert alert-info mb-3">
+                            <i class="bi bi-info-circle"></i>
+                            <strong>Nota:</strong> Después de crear el registro, podrá marcar la asistencia de los estudiantes.
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <a href="{% url 'asistencias_lista' %}" class="btn btn-secondary">
+                                    <i class="bi bi-x-circle"></i> Cancelar
+                                </a>
+                            </div>
+                            <div class="col-md-6 text-end">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="bi bi-save"></i> Crear Registro
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

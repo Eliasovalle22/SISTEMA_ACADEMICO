@@ -1,0 +1,97 @@
+{% extends 'academico/base.html' %}
+
+{% block title %}{% if editar %}Editar{% else %}Nueva{% endif %} Aula{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2>
+                <i class="bi bi-door-closed text-secondary"></i>
+                {% if editar %}Editar Aula{% else %}Nueva Aula{% endif %}
+            </h2>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'index' %}">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'aulas_lista' %}">Aulas</a></li>
+                    <li class="breadcrumb-item active">{% if editar %}Editar{% else %}Nueva{% endif %}</li>
+                </ol>
+            </nav>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="{% url 'aulas_lista' %}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Volver
+            </a>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <form method="post" class="needs-validation" novalidate>
+                {% csrf_token %}
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-info-circle"></i> Información del Aula</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            {% if not editar %}
+                            <div class="col-md-12">
+                                <label for="codigo" class="form-label">Código del Aula *</label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="codigo" 
+                                       name="codigo" 
+                                       placeholder="Ej: A-101"
+                                       value="{{ aula.codigo_aula|default:'' }}" 
+                                       required>
+                                <small class="text-muted">Código único para identificar el aula</small>
+                            </div>
+                            {% endif %}
+
+                            <div class="col-md-12">
+                                <label for="nombre" class="form-label">Nombre del Aula *</label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="nombre" 
+                                       name="nombre" 
+                                       placeholder="Ej: Aula 101 - Edificio A"
+                                       value="{{ aula.nombre_aula|default:'' }}" 
+                                       required>
+                            </div>
+
+                            <div class="col-md-12">
+                                <label for="capacidad" class="form-label">Capacidad *</label>
+                                <input type="number" 
+                                       class="form-control" 
+                                       id="capacidad" 
+                                       name="capacidad" 
+                                       placeholder="Ej: 30"
+                                       value="{{ aula.capacidad|default:'30' }}"
+                                       min="1" 
+                                       required>
+                                <small class="text-muted">Número máximo de personas que puede albergar el aula</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <a href="{% url 'aulas_lista' %}" class="btn btn-secondary">
+                                    <i class="bi bi-x-circle"></i> Cancelar
+                                </a>
+                            </div>
+                            <div class="col-md-6 text-end">
+                                <button type="submit" class="btn btn-secondary btn-lg">
+                                    <i class="bi bi-save"></i> {% if editar %}Actualizar{% else %}Guardar{% endif %} Aula
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,96 @@
+{% extends 'academico/base.html' %}
+
+{% block title %}Carga Académica{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <h2><i class="bi bi-calendar-check text-primary"></i> Carga Académica</h2>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'coordinador_dashboard' %}">Dashboard</a></li>
+                    <li class="breadcrumb-item active">Carga Académica</li>
+                </ol>
+            </nav>
+        </div>
+        <div class="col-md-6 text-end">
+            <a href="{% url 'carga_academica_crear' %}" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Nueva Carga
+            </a>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-header">
+            <h5 class="mb-0">
+                <i class="bi bi-table"></i> Lista de Carga Académica
+                <span class="badge bg-primary">{{ cargas.count }}</span>
+            </h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Materia</th>
+                            <th>Docente</th>
+                            <th>Aula</th>
+                            <th>Día</th>
+                            <th>Hora</th>
+                            <th>Grupo</th>
+                            <th>Periodo</th>
+                            <th class="text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for carga in cargas %}
+                        <tr>
+                            <td>
+                                <i class="bi bi-book text-primary"></i>
+                                <strong>{{ carga.materia.nombre_materia }}</strong>
+                            </td>
+                            <td>
+                                <i class="bi bi-person"></i>
+                                {{ carga.docente.nombre_docente }} {{ carga.docente.apellido_docente }}
+                            </td>
+                            <td>
+                                <span class="badge bg-info">{{ carga.aula.nombre_aula }}</span>
+                            </td>
+                            <td>
+                                <span class="badge bg-secondary">{{ carga.get_dia_display }}</span>
+                            </td>
+                            <td>{{ carga.hora }}</td>
+                            <td><strong>{{ carga.grupo }}</strong></td>
+                            <td>{{ carga.periodo_carga }}</td>
+                            <td class="text-center">
+                                <div class="btn-group" role="group">
+                                    <a href="{% url 'carga_academica_editar' carga.id_carga %}" 
+                                       class="btn btn-sm btn-warning">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a href="{% url 'carga_academica_eliminar' carga.id_carga %}" 
+                                       class="btn btn-sm btn-danger">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="8" class="text-center py-5">
+                                <i class="bi bi-inbox" style="font-size: 3rem; color: #ccc;"></i>
+                                <p class="text-muted mt-3">No hay carga académica registrada</p>
+                                <a href="{% url 'carga_academica_crear' %}" class="btn btn-primary">
+                                    <i class="bi bi-plus-circle"></i> Crear Primera Carga
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

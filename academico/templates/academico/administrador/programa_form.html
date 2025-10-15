@@ -1,0 +1,110 @@
+{% extends 'academico/base.html' %}
+
+{% block title %}{% if editar %}Editar{% else %}Nuevo{% endif %} Programa{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2>
+                <i class="bi bi-journal-code text-warning"></i>
+                {% if editar %}Editar Programa{% else %}Nuevo Programa{% endif %}
+            </h2>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'index' %}">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'programas_lista' %}">Programas</a></li>
+                    <li class="breadcrumb-item active">{% if editar %}Editar{% else %}Nuevo{% endif %}</li>
+                </ol>
+            </nav>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="{% url 'programas_lista' %}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Volver
+            </a>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <form method="post" class="needs-validation" novalidate>
+                {% csrf_token %}
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-info-circle"></i> Información del Programa</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            {% if not editar %}
+                            <div class="col-md-12">
+                                <label for="codigo" class="form-label">Código del Programa *</label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="codigo" 
+                                       name="codigo" 
+                                       placeholder="Ej: PROG001"
+                                       value="{{ programa.codigo_programa|default:'' }}" 
+                                       required>
+                                <small class="text-muted">Código único para identificar el programa</small>
+                            </div>
+                            {% endif %}
+
+                            <div class="col-md-12">
+                                <label for="nombre" class="form-label">Nombre del Programa *</label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="nombre" 
+                                       name="nombre" 
+                                       placeholder="Ej: Ingeniería de Sistemas"
+                                       value="{{ programa.nombre_programa|default:'' }}" 
+                                       required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="facultad" class="form-label">Facultad *</label>
+                                <select class="form-select" id="facultad" name="facultad" required>
+                                    <option value="">Seleccione una facultad...</option>
+                                    {% for facultad in facultades %}
+                                    <option value="{{ facultad.codigo_facultad }}" 
+                                            {% if programa.facultad.codigo_facultad == facultad.codigo_facultad %}selected{% endif %}>
+                                        {{ facultad.nombre_facultad }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="creditos" class="form-label">Número de Créditos *</label>
+                                <input type="number" 
+                                       class="form-control" 
+                                       id="creditos" 
+                                       name="creditos" 
+                                       placeholder="Ej: 180"
+                                       value="{{ programa.numero_creditos|default:'' }}"
+                                       min="1" 
+                                       required>
+                                <small class="text-muted">Total de créditos del programa</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <a href="{% url 'programas_lista' %}" class="btn btn-secondary">
+                                    <i class="bi bi-x-circle"></i> Cancelar
+                                </a>
+                            </div>
+                            <div class="col-md-6 text-end">
+                                <button type="submit" class="btn btn-warning btn-lg">
+                                    <i class="bi bi-save"></i> {% if editar %}Actualizar{% else %}Guardar{% endif %} Programa
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

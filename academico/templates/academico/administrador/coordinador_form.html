@@ -1,0 +1,155 @@
+{% extends 'academico/base.html' %}
+{% load static %}
+
+{% block title %}{% if editar %}Editar{% else %}Nuevo{% endif %} Coordinador{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2>
+                <i class="bi bi-person-badge text-info"></i>
+                {% if editar %}Editar Coordinador{% else %}Nuevo Coordinador{% endif %}
+            </h2>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'index' %}">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'coordinadores_lista' %}">Coordinadores</a></li>
+                    <li class="breadcrumb-item active">{% if editar %}Editar{% else %}Nuevo{% endif %}</li>
+                </ol>
+            </nav>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="{% url 'coordinadores_lista' %}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Volver
+            </a>
+        </div>
+    </div>
+
+    <form method="post" class="needs-validation" novalidate>
+        {% csrf_token %}
+        
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-person"></i> Información Personal</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="nombre" class="form-label">Nombre *</label>
+                        <input type="text" class="form-control" id="nombre" name="nombre" 
+                               value="{{ coordinador.nombre|default:'' }}" required>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="apellido" class="form-label">Apellido *</label>
+                        <input type="text" class="form-control" id="apellido" name="apellido" 
+                               value="{{ coordinador.apellido|default:'' }}" required>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="fecha_nacimiento" class="form-label">Fecha de Nacimiento *</label>
+                        <input type="date" class="form-control" id="fecha_nacimiento" name="fecha_nacimiento" 
+                               value="{% if coordinador %}{{ coordinador.fecha_nacimiento|date:'Y-m-d' }}{% endif %}" required>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="sexo" class="form-label">Sexo *</label>
+                        <select class="form-select" id="sexo" name="sexo" required>
+                            <option value="">Seleccione...</option>
+                            <option value="M" {% if coordinador.sexo == 'M' %}selected{% endif %}>Masculino</option>
+                            <option value="F" {% if coordinador.sexo == 'F' %}selected{% endif %}>Femenino</option>
+                            <option value="O" {% if coordinador.sexo == 'O' %}selected{% endif %}>Otro</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-telephone"></i> Información de Contacto</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="celular" class="form-label">Celular *</label>
+                        <input type="tel" class="form-control" id="celular" name="celular" 
+                               value="{{ coordinador.celular|default:'' }}" required>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="correo" class="form-label">Correo Electrónico *</label>
+                        <input type="email" class="form-control" id="correo" name="correo" 
+                               value="{{ coordinador.correo|default:'' }}" required>
+                    </div>
+
+                    <div class="col-md-12">
+                        <label for="direccion" class="form-label">Dirección *</label>
+                        <input type="text" class="form-control" id="direccion" name="direccion" 
+                               value="{{ coordinador.direccion|default:'' }}" required>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="ciudad" class="form-label">Ciudad *</label>
+                        <input type="text" class="form-control" id="ciudad" name="ciudad" 
+                               value="{{ coordinador.ciudad|default:'' }}" required>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="departamento" class="form-label">Departamento *</label>
+                        <input type="text" class="form-control" id="departamento" name="departamento" 
+                               value="{{ coordinador.departamento|default:'' }}" required>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="pais" class="form-label">País *</label>
+                        <input type="text" class="form-control" id="pais" name="pais" 
+                               value="{{ coordinador.pais|default:'Colombia' }}" required>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-building"></i> Programa Asignado</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-12">
+                        <label for="programa" class="form-label">Programa *</label>
+                        <select class="form-select" id="programa" name="programa" required>
+                            <option value="">Seleccione un programa...</option>
+                            {% for programa in programas %}
+                            <option value="{{ programa.codigo_programa }}" 
+                                    {% if coordinador.programa.codigo_programa == programa.codigo_programa %}selected{% endif %}>
+                                {{ programa.nombre_programa }} - {{ programa.facultad.nombre_facultad }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                        <small class="text-muted">El coordinador será responsable de este programa</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <a href="{% url 'coordinadores_lista' %}" class="btn btn-secondary">
+                            <i class="bi bi-x-circle"></i> Cancelar
+                        </a>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <button type="submit" class="btn btn-info btn-lg text-white">
+                            <i class="bi bi-save"></i> {% if editar %}Actualizar{% else %}Guardar{% endif %} Coordinador
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,200 @@
+{% extends 'academico/base.html' %}
+
+{% block title %}Detalle de Asistencia{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2>
+                <i class="bi bi-clipboard-data text-info"></i>
+                Detalle de Asistencia
+            </h2>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'docente_dashboard' %}">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'asistencias_lista' %}">Asistencias</a></li>
+                    <li class="breadcrumb-item active">Detalle</li>
+                </ol>
+            </nav>
+        </div>
+        <div class="col-md-4 text-end">
+            <button onclick="window.print()" class="btn btn-secondary me-2">
+                <i class="bi bi-printer"></i> Imprimir
+            </button>
+            <a href="{% url 'asistencias_lista' %}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Volver
+            </a>
+        </div>
+    </div>
+
+    <!-- Información de la Clase -->
+    <div class="card mb-4">
+        <div class="card-header bg-info text-white">
+            <h5 class="mb-0"><i class="bi bi-info-circle"></i> Información de la Clase</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-3">
+                    <p><strong>Código:</strong><br>{{ asistencia.codigo_asistencia }}</p>
+                </div>
+                <div class="col-md-3">
+                    <p><strong>Asignatura:</strong><br>{{ asistencia.asignatura }}</p>
+                </div>
+                <div class="col-md-3">
+                    <p><strong>Fecha:</strong><br>{{ asistencia.fecha|date:"d/m/Y" }}</p>
+                </div>
+                <div class="col-md-3">
+                    <p><strong>Hora:</strong><br>{{ asistencia.hora }}</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <p><strong>Aula:</strong><br>{{ asistencia.aula.nombre_aula }}</p>
+                </div>
+                <div class="col-md-3">
+                    <p><strong>Grupo:</strong><br>{{ asistencia.grupo }}</p>
+                </div>
+                <div class="col-md-3">
+                    <p><strong>Sede:</strong><br>{{ asistencia.sede }}</p>
+                </div>
+                <div class="col-md-3">
+                    <p><strong>Docente:</strong><br>{{ asistencia.docente_responsable.nombre_docente }} {{ asistencia.docente_responsable.apellido_docente }}</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <p><strong>Tema:</strong><br>{{ asistencia.tema }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Estadísticas -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <i class="bi bi-people text-primary" style="font-size: 2rem;"></i>
+                    <h3 class="mt-2">{{ total }}</h3>
+                    <p class="text-muted mb-0">Total Estudiantes</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-center border-success">
+                <div class="card-body">
+                    <i class="bi bi-check-circle text-success" style="font-size: 2rem;"></i>
+                    <h3 class="mt-2 text-success">{{ presentes }}</h3>
+                    <p class="text-muted mb-0">Presentes</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-center border-danger">
+                <div class="card-body">
+                    <i class="bi bi-x-circle text-danger" style="font-size: 2rem;"></i>
+                    <h3 class="mt-2 text-danger">{{ ausentes }}</h3>
+                    <p class="text-muted mb-0">Ausentes</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-center border-warning">
+                <div class="card-body">
+                    <i class="bi bi-clock text-warning" style="font-size: 2rem;"></i>
+                    <h3 class="mt-2 text-warning">{{ tardanzas }}</h3>
+                    <p class="text-muted mb-0">Tardanzas</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Porcentaje de Asistencia -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5>Porcentaje de Asistencia</h5>
+            <div class="progress" style="height: 30px;">
+                <div class="progress-bar bg-success" 
+                     role="progressbar" 
+                     style="width: {{ porcentaje_asistencia }}%"
+                     aria-valuenow="{{ porcentaje_asistencia }}" 
+                     aria-valuemin="0" 
+                     aria-valuemax="100">
+                    {{ porcentaje_asistencia|floatformat:1 }}%
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lista de Estudiantes -->
+    <div class="card shadow-sm">
+        <div class="card-header">
+            <h5 class="mb-0"><i class="bi bi-list-check"></i> Detalle de Asistencia por Estudiante</h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>#</th>
+                            <th>ID</th>
+                            <th>Estudiante</th>
+                            <th>Correo</th>
+                            <th class="text-center">Estado</th>
+                            <th>Observación</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for detalle in detalles %}
+                        <tr class="{% if detalle.estado == 'P' %}table-success{% elif detalle.estado == 'A' %}table-danger{% elif detalle.estado == 'T' %}table-warning{% else %}table-info{% endif %}">
+                            <td>{{ forloop.counter }}</td>
+                            <td><strong>{{ detalle.estudiante.id_estudiante }}</strong></td>
+                            <td>
+                                <i class="bi bi-person-circle"></i>
+                                {{ detalle.estudiante.nombre }} {{ detalle.estudiante.apellido }}
+                            </td>
+                            <td><small>{{ detalle.estudiante.correo }}</small></td>
+                            <td class="text-center">
+                                {% if detalle.estado == 'P' %}
+                                    <span class="badge bg-success">
+                                        <i class="bi bi-check-circle"></i> Presente
+                                    </span>
+                                {% elif detalle.estado == 'A' %}
+                                    <span class="badge bg-danger">
+                                        <i class="bi bi-x-circle"></i> Ausente
+                                    </span>
+                                {% elif detalle.estado == 'T' %}
+                                    <span class="badge bg-warning">
+                                        <i class="bi bi-clock"></i> Tardanza
+                                    </span>
+                                {% else %}
+                                    <span class="badge bg-info">
+                                        <i class="bi bi-file-text"></i> Excusa
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td>{{ detalle.observacion|default:"Sin observaciones" }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center py-4">
+                                <p class="text-muted">No hay registros de asistencia</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer text-center">
+            <a href="{% url 'asistencia_registrar' asistencia.codigo_asistencia %}" class="btn btn-warning">
+                <i class="bi bi-pencil"></i> Editar Asistencia
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

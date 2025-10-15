@@ -1,0 +1,143 @@
+{% extends 'academico/base.html' %}
+
+{% block title %}{% if editar %}Editar{% else %}Nueva{% endif %} Carga Académica{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2>
+                <i class="bi bi-calendar-check text-primary"></i>
+                {% if editar %}Editar Carga Académica{% else %}Nueva Carga Académica{% endif %}
+            </h2>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'coordinador_dashboard' %}">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'carga_academica_lista' %}">Carga Académica</a></li>
+                    <li class="breadcrumb-item active">{% if editar %}Editar{% else %}Nueva{% endif %}</li>
+                </ol>
+            </nav>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="{% url 'carga_academica_lista' %}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Volver
+            </a>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <form method="post" class="needs-validation" novalidate>
+                {% csrf_token %}
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-info-circle"></i> Información de la Carga</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="materia" class="form-label">Materia *</label>
+                                <select class="form-select" id="materia" name="materia" required>
+                                    <option value="">Seleccione una materia...</option>
+                                    {% for materia in materias %}
+                                    <option value="{{ materia.codigo_materia }}" 
+                                            {% if carga.materia.codigo_materia == materia.codigo_materia %}selected{% endif %}>
+                                        {{ materia.nombre_materia }} ({{ materia.numero_creditos }} créditos)
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="docente" class="form-label">Docente *</label>
+                                <select class="form-select" id="docente" name="docente" required>
+                                    <option value="">Seleccione un docente...</option>
+                                    {% for docente in docentes %}
+                                    <option value="{{ docente.id_docente }}" 
+                                            {% if carga.docente.id_docente == docente.id_docente %}selected{% endif %}>
+                                        {{ docente.nombre_docente }} {{ docente.apellido_docente }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label for="aula" class="form-label">Aula *</label>
+                                <select class="form-select" id="aula" name="aula" required>
+                                    <option value="">Seleccione un aula...</option>
+                                    {% for aula in aulas %}
+                                    <option value="{{ aula.codigo_aula }}" 
+                                            {% if carga.aula.codigo_aula == aula.codigo_aula %}selected{% endif %}>
+                                        {{ aula.nombre_aula }} (Cap: {{ aula.capacidad }})
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label for="dia" class="form-label">Día *</label>
+                                <select class="form-select" id="dia" name="dia" required>
+                                    <option value="">Seleccione un día...</option>
+                                    <option value="LU" {% if carga.dia == 'LU' %}selected{% endif %}>Lunes</option>
+                                    <option value="MA" {% if carga.dia == 'MA' %}selected{% endif %}>Martes</option>
+                                    <option value="MI" {% if carga.dia == 'MI' %}selected{% endif %}>Miércoles</option>
+                                    <option value="JU" {% if carga.dia == 'JU' %}selected{% endif %}>Jueves</option>
+                                    <option value="VI" {% if carga.dia == 'VI' %}selected{% endif %}>Viernes</option>
+                                    <option value="SA" {% if carga.dia == 'SA' %}selected{% endif %}>Sábado</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label for="hora" class="form-label">Hora *</label>
+                                <input type="time" 
+                                       class="form-control" 
+                                       id="hora" 
+                                       name="hora" 
+                                       value="{% if carga %}{{ carga.hora|time:'H:i' }}{% endif %}" 
+                                       required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="grupo" class="form-label">Grupo *</label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="grupo" 
+                                       name="grupo" 
+                                       placeholder="Ej: A1, B2, C3"
+                                       value="{{ carga.grupo|default:'' }}" 
+                                       required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="periodo" class="form-label">Periodo Académico *</label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="periodo" 
+                                       name="periodo" 
+                                       placeholder="Ej: 2025-1"
+                                       value="{{ carga.periodo_carga|default:'' }}" 
+                                       required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <a href="{% url 'carga_academica_lista' %}" class="btn btn-secondary">
+                                    <i class="bi bi-x-circle"></i> Cancelar
+                                </a>
+                            </div>
+                            <div class="col-md-6 text-end">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="bi bi-save"></i> {% if editar %}Actualizar{% else %}Guardar{% endif %}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
